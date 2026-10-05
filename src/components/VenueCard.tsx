@@ -26,7 +26,6 @@ export default function VenueCard({ venue }: { venue: Venue }) {
   const isLocal = venue.category === 'LOCAL';
   const badges = [
     venue.delivery && '배달 가능',
-    venue.walkMinutes && `걸어서 ${venue.walkMinutes}분`,
     venue.hasBeamProjector && '빔프로젝터',
     venue.hasPrivateRoom && '프라이빗 룸',
     venue.hasParking && '주차 가능',
