@@ -26,6 +26,33 @@ export const INITIAL_FILTER: FilterState = {
   sortBy: 'RATING',
 };
 
+// 시트에 값이 채워진 항목만 조건으로 보여주기 위한 표시
+export interface FilterAvailability {
+  capacity: boolean;
+  price: boolean;
+  beam: boolean;
+  privateRoom: boolean;
+  parking: boolean;
+  adminDocs: boolean;
+  delivery: boolean;
+  walkable: boolean;
+}
+
+export function getAvailability(venues: Venue[]): FilterAvailability {
+  const business = venues.filter((v) => v.category !== 'LOCAL');
+  const local = venues.filter((v) => v.category === 'LOCAL');
+  return {
+    capacity: business.some((v) => v.maxCapacity > 0),
+    price: business.some((v) => v.pricePerPerson),
+    beam: business.some((v) => v.hasBeamProjector !== undefined),
+    privateRoom: business.some((v) => v.hasPrivateRoom !== undefined),
+    parking: business.some((v) => v.hasParking !== undefined),
+    adminDocs: business.some((v) => Object.values(v.adminDocs).some((d) => d !== undefined)),
+    delivery: local.some((v) => v.delivery !== undefined),
+    walkable: local.some((v) => v.walkMinutes),
+  };
+}
+
 export function hasAllAdminDocs(v: Venue): boolean {
   const { taxInvoice, quotation, businessReg, corpCard } = v.adminDocs;
   return Boolean(taxInvoice && quotation && businessReg && corpCard);

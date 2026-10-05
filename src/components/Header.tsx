@@ -29,8 +29,7 @@ export default function Header() {
               오늘의 업무, 장소 고르기부터 가볍게.
             </h1>
             <p className="mt-3 max-w-xl text-sm text-vanilla/80 sm:text-base">
-              오찬 미팅, 팀 회식, 미팅 카페, 연수·대관까지. 인원과 시설, 행정서류 지원 여부로 춘천의 업무 장소를
-              골라보세요.
+              오찬 미팅, 팀 회식, 미팅 카페, 연수·대관까지. 춘천의 업무 장소와 근처 밥집을 한곳에서 골라보세요.
             </p>
           </div>
         </div>

@@ -125,27 +125,20 @@ export default function VenueCard({ venue }: { venue: Venue }) {
         </div>
       )}
 
-      {!isLocal &&
-        (docsUnknown ? (
-          <p className="mt-3 rounded-2xl bg-vanilla p-3 text-xs text-forest/60">
-            행정서류 지원 여부는 아직 확인 전이에요. 전화로 물어봐 주세요.
-          </p>
-        ) : (
-          <ul className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 rounded-2xl bg-vanilla p-3 text-xs">
-            {ADMIN_DOCS.map(({ key, label }) => {
-              const supported = venue.adminDocs[key];
-              return (
-                <li key={key} className={`flex items-center gap-1 ${supported ? 'font-medium' : 'text-forest/40'}`}>
-                  {supported ? <Check size={14} strokeWidth={3} /> : <Minus size={14} />}
-                  {label}
-                  <span className="sr-only">
-                    {supported ? '지원' : supported === false ? '미지원' : '확인 전'}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        ))}
+      {!isLocal && !docsUnknown && (
+        <ul className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 rounded-2xl bg-vanilla p-3 text-xs">
+          {ADMIN_DOCS.map(({ key, label }) => {
+            const supported = venue.adminDocs[key];
+            return (
+              <li key={key} className={`flex items-center gap-1 ${supported ? 'font-medium' : 'text-forest/40'}`}>
+                {supported ? <Check size={14} strokeWidth={3} /> : <Minus size={14} />}
+                {label}
+                <span className="sr-only">{supported ? '지원' : supported === false ? '미지원' : '확인 전'}</span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       <div className="mt-3 flex-1 text-sm text-forest/80">
         <p className={`break-words ${longSummary && !expanded ? 'line-clamp-3' : ''}`}>{venue.reviewSummary}</p>

@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
 import { Bike, Car, DoorClosed, FileText, Footprints, RotateCcw, Video } from 'lucide-react';
 import { CATEGORY_LABEL, type Category } from '../types/venue';
-import type { FilterState } from '../utils/filterVenues';
+import type { FilterAvailability, FilterState } from '../utils/filterVenues';
 import { CategoryIcon, RiceBowlIcon } from './BrandIcon';
 
 interface Props {
   filter: FilterState;
+  available: FilterAvailability;
   onChange: (patch: Partial<FilterState>) => void;
   onReset: () => void;
 }
@@ -80,8 +81,9 @@ function Toggle({
   );
 }
 
-export default function FilterSidebar({ filter, onChange, onReset }: Props) {
+export default function FilterSidebar({ filter, available, onChange, onReset }: Props) {
   const isLocal = filter.category === 'LOCAL';
+  const hasFacility = available.beam || available.privateRoom || available.parking;
 
   return (
     <aside className="w-full shrink-0 space-y-5 rounded-card border border-sage bg-white p-5 shadow-card lg:sticky lg:top-6 lg:w-72">
@@ -128,87 +130,96 @@ export default function FilterSidebar({ filter, onChange, onReset }: Props) {
         </Section>
       )}
 
-      {isLocal ? (
+      {isLocal && (available.delivery || available.walkable) && (
         <Section title="이용 방법">
-          <Toggle
-            checked={filter.needDelivery}
-            onChange={(needDelivery) => onChange({ needDelivery })}
-            icon={<Bike size={16} className="text-forest/60" />}
-            label="배달되는 곳"
-          />
-          <Toggle
-            checked={filter.needWalkable}
-            onChange={(needWalkable) => onChange({ needWalkable })}
-            icon={<Footprints size={16} className="text-forest/60" />}
-            label="걸어서 갈 수 있는 곳"
-          />
-          <p className="mt-1 px-2 text-xs text-forest/50">
-            도교육청 근처에서 시켜 먹거나 걸어가서 먹는 곳이에요.
-          </p>
+          {available.delivery && (
+            <Toggle
+              checked={filter.needDelivery}
+              onChange={(needDelivery) => onChange({ needDelivery })}
+              icon={<Bike size={16} className="text-forest/60" />}
+              label="배달되는 곳"
+            />
+          )}
+          {available.walkable && (
+            <Toggle
+              checked={filter.needWalkable}
+              onChange={(needWalkable) => onChange({ needWalkable })}
+              icon={<Footprints size={16} className="text-forest/60" />}
+              label="걸어서 갈 수 있는 곳"
+            />
+          )}
         </Section>
-      ) : (
-        <>
-          <Section title="인원">
-            <div className="grid grid-cols-2 gap-2">
-              {CAPACITY_GROUPS.map((g) => (
-                <ChoiceButton
-                  key={g.value}
-                  active={filter.capacityGroup === g.value}
-                  onClick={() => onChange({ capacityGroup: g.value })}
-                >
-                  {g.label}
-                </ChoiceButton>
-              ))}
-            </div>
-          </Section>
+      )}
 
-          <Section title="1인당 가격">
-            <div className="grid grid-cols-2 gap-2">
-              {PRICE_LIMITS.map((p) => (
-                <ChoiceButton
-                  key={p.value}
-                  active={filter.maxPrice === p.value}
-                  onClick={() => onChange({ maxPrice: p.value })}
-                >
-                  {p.label}
-                </ChoiceButton>
-              ))}
-            </div>
-          </Section>
+      {!isLocal && available.capacity && (
+        <Section title="인원">
+          <div className="grid grid-cols-2 gap-2">
+            {CAPACITY_GROUPS.map((g) => (
+              <ChoiceButton
+                key={g.value}
+                active={filter.capacityGroup === g.value}
+                onClick={() => onChange({ capacityGroup: g.value })}
+              >
+                {g.label}
+              </ChoiceButton>
+            ))}
+          </div>
+        </Section>
+      )}
 
-          <Section title="시설">
+      {!isLocal && available.price && (
+        <Section title="1인당 가격">
+          <div className="grid grid-cols-2 gap-2">
+            {PRICE_LIMITS.map((p) => (
+              <ChoiceButton key={p.value} active={filter.maxPrice === p.value} onClick={() => onChange({ maxPrice: p.value })}>
+                {p.label}
+              </ChoiceButton>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {!isLocal && hasFacility && (
+        <Section title="시설">
+          {available.beam && (
             <Toggle
               checked={filter.needBeam}
               onChange={(needBeam) => onChange({ needBeam })}
               icon={<Video size={16} className="text-forest/60" />}
               label="빔프로젝터 보유"
             />
+          )}
+          {available.privateRoom && (
             <Toggle
               checked={filter.needPrivateRoom}
               onChange={(needPrivateRoom) => onChange({ needPrivateRoom })}
               icon={<DoorClosed size={16} className="text-forest/60" />}
               label="프라이빗 룸"
             />
+          )}
+          {available.parking && (
             <Toggle
               checked={filter.needParking}
               onChange={(needParking) => onChange({ needParking })}
               icon={<Car size={16} className="text-forest/60" />}
               label="전용 주차장"
             />
-          </Section>
+          )}
+        </Section>
+      )}
 
-          <Section title="행정서류">
-            <Toggle
-              checked={filter.needAdminDocs}
-              onChange={(needAdminDocs) => onChange({ needAdminDocs })}
-              icon={<FileText size={16} className="text-forest/60" />}
-              label="행정서류 4종 완비 장소만 보기"
-            />
-            <p className="mt-1 px-2 text-xs text-forest/50">
-              전자세금계산서 · 견적서 · 사업자등록증 · 관공서/법인카드 결제
-            </p>
-          </Section>
-        </>
+      {!isLocal && available.adminDocs && (
+        <Section title="행정서류">
+          <Toggle
+            checked={filter.needAdminDocs}
+            onChange={(needAdminDocs) => onChange({ needAdminDocs })}
+            icon={<FileText size={16} className="text-forest/60" />}
+            label="행정서류 4종 완비 장소만 보기"
+          />
+          <p className="mt-1 px-2 text-xs text-forest/50">
+            전자세금계산서 · 견적서 · 사업자등록증 · 관공서/법인카드 결제
+          </p>
+        </Section>
       )}
     </aside>
   );

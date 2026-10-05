@@ -7,7 +7,7 @@ import Footer from './components/Footer';
 import FaceDots from './components/FaceDots';
 import { RiceBowlIcon } from './components/BrandIcon';
 import type { Venue } from './types/venue';
-import { filterVenues, INITIAL_FILTER, type FilterState } from './utils/filterVenues';
+import { filterVenues, getAvailability, INITIAL_FILTER, type FilterState } from './utils/filterVenues';
 import { loadVenues } from './utils/loadVenues';
 
 export default function App() {
@@ -24,6 +24,7 @@ export default function App() {
   }, []);
 
   const filtered = useMemo(() => filterVenues(venues, filter), [venues, filter]);
+  const available = useMemo(() => getAvailability(venues), [venues]);
 
   const isLocal = filter.category === 'LOCAL';
   // 업무 장소와 근처 밥집은 따로 셈
@@ -43,7 +44,7 @@ export default function App() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 lg:flex-row lg:items-start">
-        <FilterSidebar filter={filter} onChange={updateFilter} onReset={resetFilter} />
+        <FilterSidebar filter={filter} available={available} onChange={updateFilter} onReset={resetFilter} />
         <main className="min-w-0 flex-1">
           {isLocal && (
             <div className="mb-4 flex items-center gap-3 px-1">
