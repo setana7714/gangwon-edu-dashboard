@@ -1,8 +1,8 @@
 import Papa from 'papaparse';
 import type { Venue } from '../types/venue';
-import { GOOGLE_SHEET_CSV_URL } from '../config';
+import { GOOGLE_SHEET_CSV_URL, GOOGLE_SHEET_LOCAL_CSV_URL } from '../config';
 
-const LOCAL_CSV_URL = 'data/venues.csv';
+const FALLBACK_CSV_URL = 'data/venues.csv';
 
 type CsvRow = Record<string, string | undefined>;
 
@@ -22,6 +22,7 @@ function toCategory(value: string | undefined): Venue['category'] {
   return 'MEAL';
 }
 
+// 업무 장소 시트와 근처 밥집 시트(열이 더 적음) 양쪽 양식을 모두 읽음
 function rowToVenue(row: CsvRow, index: number): Venue {
   return {
     id: text(row['번호']) || String(index + 1),
@@ -30,7 +31,7 @@ function rowToVenue(row: CsvRow, index: number): Venue {
     subCategory: text(row['세부 분류']) || undefined,
     menu: text(row['대표 메뉴']) || undefined,
     nearby: text(row['주요 인근 기관']) || undefined,
-    phone: text(row['예약 전화번호']),
+    phone: text(row['예약 전화번호']) || text(row['전화번호']),
     address: text(row['주소']),
     driveMinutes: toNumber(row['도교육청에서 차로(분)']) || undefined,
     walkMinutes: toNumber(row['도보(분)']) || undefined,
@@ -47,9 +48,9 @@ function rowToVenue(row: CsvRow, index: number): Venue {
       corpCard: toBool(row['카드결제']),
     },
     pricePerPerson: toNumber(row['1인당 가격(원)']) || undefined,
-    rating: toNumber(row['검증 평점']),
+    rating: toNumber(row['검증 평점']) || toNumber(row['평점']),
     reviewCount: toNumber(row['리뷰 수']),
-    reviewSummary: text(row['검증 후기']),
+    reviewSummary: text(row['검증 후기']) || text(row['한마디']),
     mapUrl: text(row['지도 링크']),
     verifiedAt: text(row['최종 확인일']) || undefined,
   };
@@ -69,11 +70,23 @@ async function loadCsv(url: string): Promise<Venue[] | null> {
 }
 
 // 구글 시트 → public/data/venues.csv 순으로 시도
-export async function loadVenues(): Promise<Venue[]> {
-  const urls = [GOOGLE_SHEET_CSV_URL, LOCAL_CSV_URL].filter(Boolean);
+async function loadBusinessVenues(): Promise<Venue[]> {
+  const urls = [GOOGLE_SHEET_CSV_URL, FALLBACK_CSV_URL].filter(Boolean);
   for (const url of urls) {
     const venues = await loadCsv(url).catch(() => null);
     if (venues && venues.length > 0) return venues;
   }
   throw new Error('장소 데이터를 불러오지 못했습니다.');
+}
+
+// 근처 밥집 시트의 행은 카테고리 열이 없어도 모두 근처 밥집으로 처리
+async function loadLocalVenues(): Promise<Venue[]> {
+  if (!GOOGLE_SHEET_LOCAL_CSV_URL) return [];
+  const venues = await loadCsv(GOOGLE_SHEET_LOCAL_CSV_URL).catch(() => null);
+  return (venues ?? []).map((v, i) => ({ ...v, id: `local-${i + 1}`, category: 'LOCAL' }));
+}
+
+export async function loadVenues(): Promise<Venue[]> {
+  const [business, local] = await Promise.all([loadBusinessVenues(), loadLocalVenues()]);
+  return [...business, ...local];
 }
