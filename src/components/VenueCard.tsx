@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Building2, Check, MapPin, Minus, Phone, Star, Users, UtensilsCrossed, Wallet } from 'lucide-react';
 import { CATEGORY_LABEL, type AdminDocsSupport, type Venue } from '../types/venue';
 import { hasAllAdminDocs, isRecommended } from '../utils/filterVenues';
@@ -14,7 +15,13 @@ const ADMIN_DOCS: { key: keyof AdminDocsSupport; label: string }[] = [
 const mapLink = (venue: Venue): string =>
   venue.mapUrl || `https://map.naver.com/p/search/${encodeURIComponent(`춘천 ${venue.name}`)}`;
 
+// 후기가 이보다 길면 접어서 보여줌
+const SUMMARY_FOLD_LENGTH = 90;
+
 export default function VenueCard({ venue }: { venue: Venue }) {
+  const [expanded, setExpanded] = useState(false);
+  const longSummary = venue.reviewSummary.length > SUMMARY_FOLD_LENGTH;
+  const docsUnknown = ADMIN_DOCS.every(({ key }) => venue.adminDocs[key] === undefined);
   // 근처 밥집은 업무용 정보(행정서류·수용 인원) 대신 메뉴·배달·도보 정보 위주로 표시
   const isLocal = venue.category === 'LOCAL';
   const badges = [
@@ -66,9 +73,13 @@ export default function VenueCard({ venue }: { venue: Venue }) {
         )}
         <div className="flex items-center gap-2">
           <Phone size={15} className="shrink-0 text-forest/50" />
-          <a href={`tel:${venue.phone}`} className="font-bold text-forest underline-offset-2 hover:underline">
-            {venue.phone}
-          </a>
+          {venue.phone ? (
+            <a href={`tel:${venue.phone}`} className="font-bold text-forest underline-offset-2 hover:underline">
+              {venue.phone}
+            </a>
+          ) : (
+            <span className="text-forest/50">전화번호는 아직 확인 전이에요</span>
+          )}
         </div>
         {venue.address && (
           <div className="flex items-start gap-2">
@@ -114,33 +125,54 @@ export default function VenueCard({ venue }: { venue: Venue }) {
         </div>
       )}
 
-      {!isLocal && (
-        <ul className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 rounded-2xl bg-vanilla p-3 text-xs">
-          {ADMIN_DOCS.map(({ key, label }) => {
-            const supported = venue.adminDocs[key];
-            return (
-              <li key={key} className={`flex items-center gap-1 ${supported ? 'font-medium' : 'text-forest/40'}`}>
-                {supported ? <Check size={14} strokeWidth={3} /> : <Minus size={14} />}
-                {label}
-                <span className="sr-only">{supported ? '지원' : '미지원'}</span>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      {!isLocal &&
+        (docsUnknown ? (
+          <p className="mt-3 rounded-2xl bg-vanilla p-3 text-xs text-forest/60">
+            행정서류 지원 여부는 아직 확인 전이에요. 전화로 물어봐 주세요.
+          </p>
+        ) : (
+          <ul className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 rounded-2xl bg-vanilla p-3 text-xs">
+            {ADMIN_DOCS.map(({ key, label }) => {
+              const supported = venue.adminDocs[key];
+              return (
+                <li key={key} className={`flex items-center gap-1 ${supported ? 'font-medium' : 'text-forest/40'}`}>
+                  {supported ? <Check size={14} strokeWidth={3} /> : <Minus size={14} />}
+                  {label}
+                  <span className="sr-only">
+                    {supported ? '지원' : supported === false ? '미지원' : '확인 전'}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        ))}
 
-      <p className="mt-3 flex-1 text-sm text-forest/80">{venue.reviewSummary}</p>
+      <div className="mt-3 flex-1 text-sm text-forest/80">
+        <p className={`break-words ${longSummary && !expanded ? 'line-clamp-3' : ''}`}>{venue.reviewSummary}</p>
+        {longSummary && (
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded}
+            className="mt-1 text-xs font-bold underline underline-offset-2"
+          >
+            {expanded ? '접기' : '더 보기'}
+          </button>
+        )}
+      </div>
 
       {venue.verifiedAt && <p className="mt-2 text-xs text-forest/50">정보 확인일: {venue.verifiedAt}</p>}
 
       <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-1 2xl:grid-cols-2">
-        <a
-          href={`tel:${venue.phone}`}
-          className="flex items-center justify-center gap-1.5 rounded-full bg-coral px-3 py-2 text-sm font-bold transition hover:brightness-95"
-        >
-          <Phone size={14} />
-          {isLocal ? '전화로 주문·문의하기' : '전화로 자리 확인하기'}
-        </a>
+        {venue.phone && (
+          <a
+            href={`tel:${venue.phone}`}
+            className="flex items-center justify-center gap-1.5 rounded-full bg-coral px-3 py-2 text-sm font-bold transition hover:brightness-95"
+          >
+            <Phone size={14} />
+            {isLocal ? '전화로 주문·문의하기' : '전화로 자리 확인하기'}
+          </a>
+        )}
         <a
           href={mapLink(venue)}
           target="_blank"

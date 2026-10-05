@@ -8,8 +8,9 @@ type CsvRow = Record<string, string | undefined>;
 
 const text = (value: string | undefined): string => (value ?? '').trim();
 
-const toBool = (value: string | undefined): boolean =>
-  ['y', 'yes', 'o', 'true', '1', '예', '가능'].includes(text(value).toLowerCase());
+// 빈 칸은 '미지원'이 아니라 '아직 확인 전'(undefined)으로 구분
+const toBool = (value: string | undefined): boolean | undefined =>
+  text(value) ? ['y', 'yes', 'o', 'true', '1', '예', '가능'].includes(text(value).toLowerCase()) : undefined;
 
 // "30명", "15,000원" 처럼 단위가 붙어 있어도 숫자만 읽음
 const toNumber = (value: string | undefined): number => Number(text(value).replace(/[^\d.]/g, '')) || 0;
@@ -66,7 +67,8 @@ async function loadCsv(url: string): Promise<Venue[] | null> {
   });
   // 시트 양식이 아닌 응답(오류 페이지 등)을 걸러냄
   if (!meta.fields?.includes('상호명')) return null;
-  return data.map(rowToVenue).filter((v) => v.name);
+  // 전화번호와 주소가 모두 없는 행은 보여줄 정보가 없어 제외
+  return data.map(rowToVenue).filter((v) => v.name && (v.phone || v.address));
 }
 
 // 구글 시트 → public/data/venues.csv 순으로 시도

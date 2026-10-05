@@ -28,7 +28,7 @@ export const INITIAL_FILTER: FilterState = {
 
 export function hasAllAdminDocs(v: Venue): boolean {
   const { taxInvoice, quotation, businessReg, corpCard } = v.adminDocs;
-  return taxInvoice && quotation && businessReg && corpCard;
+  return Boolean(taxInvoice && quotation && businessReg && corpCard);
 }
 
 // 추천 픽 배지 기준: 평점 4.5 이상
