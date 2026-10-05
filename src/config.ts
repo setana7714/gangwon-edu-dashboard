@@ -5,4 +5,5 @@ export const GOOGLE_SHEET_CSV_URL =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vQFLx4qXGY3AbP-bTO-SRYkRCnxvE2ijny-8NStjOmmXm9Y1eB9CAb6ELXchLrywEJ-Yds0prcqQccZ/pub?output=csv';
 
 // 주소 2: 근처 밥집 시트 (같은 스프레드시트의 두 번째 탭을 따로 게시한 주소)
-export const GOOGLE_SHEET_LOCAL_CSV_URL = '';
+export const GOOGLE_SHEET_LOCAL_CSV_URL =
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vQFLx4qXGY3AbP-bTO-SRYkRCnxvE2ijny-8NStjOmmXm9Y1eB9CAb6ELXchLrywEJ-Yds0prcqQccZ/pub?gid=1646729429&single=true&output=csv';
