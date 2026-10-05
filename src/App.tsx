@@ -50,7 +50,7 @@ export default function App() {
               <RiceBowlIcon size={44} />
               <div>
                 <h2 className="text-xl font-extrabold leading-tight">근처 밥집</h2>
-                <p className="text-sm text-forest/70">오늘 초근 때는 뭐 먹을까?</p>
+                <p className="text-sm text-forest/70">오늘 초근 때 뭐먹지?</p>
               </div>
             </div>
           )}
