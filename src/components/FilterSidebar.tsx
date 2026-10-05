@@ -100,7 +100,9 @@ export default function FilterSidebar({ filter, onChange, onReset }: Props) {
       <Section title="무엇을 찾나요?">
         <div className="grid grid-cols-2 gap-2">
           <ChoiceButton active={!isLocal} onClick={() => onChange({ category: 'ALL' })}>
-            업무 장소
+            <span>
+              업무 장소 <span className="text-xs font-medium">(연수, 식당, 카페)</span>
+            </span>
           </ChoiceButton>
           <ChoiceButton active={isLocal} onClick={() => onChange({ category: 'LOCAL' })}>
             <RiceBowlIcon size={26} />

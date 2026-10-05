@@ -5,17 +5,14 @@ export default function Header() {
     <>
       <header className="border-b border-sage bg-vanilla">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
-          <a href="./" aria-label="밋앤잇 홈">
-            <img src="brand/meetneat-logo.svg" alt="밋앤잇" className="hidden h-[72px] w-auto sm:block" />
+          <a href="./" aria-label="쑥의 밋앤잇 홈">
+            <img src="brand/meetneat-logo.svg" alt="" className="hidden h-[72px] w-auto sm:block" />
             <span className="flex items-center gap-2 sm:hidden">
               <img src="brand/meetneat-symbol.svg" alt="" className="h-10 w-10" />
-              <span className="text-xl font-extrabold tracking-[-0.04em]">밋앤잇</span>
+              <span className="text-xl font-extrabold tracking-[-0.04em]">쑥의 밋앤잇</span>
             </span>
           </a>
-          <p className="text-right text-xs font-medium text-forest/70 sm:text-sm">
-            강원특별자치도교육청
-            <br className="sm:hidden" /> 업무 지원 장소 대시보드
-          </p>
+          <p className="hidden text-2xl font-extrabold tracking-[-0.04em] sm:block">쑥의 밋앤잇</p>
         </div>
       </header>
 
