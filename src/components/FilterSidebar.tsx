@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
-import { Car, DoorClosed, FileText, RotateCcw, Search, Video } from 'lucide-react';
+import { Bike, Car, DoorClosed, FileText, Footprints, RotateCcw, Video } from 'lucide-react';
 import { CATEGORY_LABEL, type Category } from '../types/venue';
 import type { FilterState } from '../utils/filterVenues';
-import BrandIcon from './BrandIcon';
+import { CategoryIcon } from './BrandIcon';
 
 interface Props {
   filter: FilterState;
@@ -10,7 +10,7 @@ interface Props {
   onReset: () => void;
 }
 
-const CATEGORIES: Category[] = ['ALL', 'MEAL', 'CAFE', 'VENUE'];
+const CATEGORIES: Category[] = ['ALL', 'MEAL', 'CAFE', 'VENUE', 'LOCAL'];
 
 const CAPACITY_GROUPS = [
   { value: 0, label: '전체' },
@@ -35,7 +35,17 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function ChoiceButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
+function ChoiceButton({
+  active,
+  onClick,
+  className = '',
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  className?: string;
+  children: ReactNode;
+}) {
   return (
     <button
       type="button"
@@ -45,7 +55,7 @@ function ChoiceButton({ active, onClick, children }: { active: boolean; onClick:
         active
           ? 'border-forest bg-mint font-bold text-forest'
           : 'border-sage bg-white font-medium text-forest/80 hover:border-mint hover:bg-mint/20'
-      }`}
+      } ${className}`}
     >
       {children}
     </button>
@@ -81,6 +91,8 @@ function Toggle({
 }
 
 export default function FilterSidebar({ filter, onChange, onReset }: Props) {
+  const isLocal = filter.category === 'LOCAL';
+
   return (
     <aside className="w-full shrink-0 space-y-5 rounded-card border border-sage bg-white p-5 shadow-card lg:sticky lg:top-6 lg:w-72">
       <div className="flex items-center justify-between">
@@ -95,85 +107,104 @@ export default function FilterSidebar({ filter, onChange, onReset }: Props) {
         </button>
       </div>
 
-      <label className="relative block">
-        <span className="sr-only">상호명 검색</span>
-        <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-forest/40" />
-        <input
-          type="search"
-          value={filter.keyword}
-          onChange={(e) => onChange({ keyword: e.target.value })}
-          placeholder="상호명 · 주소 · 인근 기관 검색"
-          className="w-full rounded-full border border-sage bg-white py-2 pl-10 pr-4 text-sm placeholder:text-forest/40 focus:border-forest focus:outline-none"
-        />
-      </label>
-
       <Section title="카테고리">
         <div className="grid grid-cols-2 gap-2">
           {CATEGORIES.map((c) => (
-            <ChoiceButton key={c} active={filter.category === c} onClick={() => onChange({ category: c })}>
-              {c !== 'ALL' && <BrandIcon name={c} size={26} />}
+            <ChoiceButton
+              key={c}
+              active={filter.category === c}
+              onClick={() => onChange({ category: c })}
+              className={c === 'ALL' ? 'col-span-2' : ''}
+            >
+              {c !== 'ALL' && <CategoryIcon category={c} size={26} />}
               {CATEGORY_LABEL[c]}
             </ChoiceButton>
           ))}
         </div>
       </Section>
 
-      <Section title="인원">
-        <div className="grid grid-cols-2 gap-2">
-          {CAPACITY_GROUPS.map((g) => (
-            <ChoiceButton
-              key={g.value}
-              active={filter.capacityGroup === g.value}
-              onClick={() => onChange({ capacityGroup: g.value })}
-            >
-              {g.label}
-            </ChoiceButton>
-          ))}
-        </div>
-      </Section>
+      {isLocal ? (
+        <Section title="이용 방법">
+          <Toggle
+            checked={filter.needDelivery}
+            onChange={(needDelivery) => onChange({ needDelivery })}
+            icon={<Bike size={16} className="text-forest/60" />}
+            label="배달되는 곳"
+          />
+          <Toggle
+            checked={filter.needWalkable}
+            onChange={(needWalkable) => onChange({ needWalkable })}
+            icon={<Footprints size={16} className="text-forest/60" />}
+            label="걸어서 갈 수 있는 곳"
+          />
+          <p className="mt-1 px-2 text-xs text-forest/50">
+            도교육청 근처에서 시켜 먹거나 걸어가서 먹는 곳이에요.
+          </p>
+        </Section>
+      ) : (
+        <>
+          <Section title="인원">
+            <div className="grid grid-cols-2 gap-2">
+              {CAPACITY_GROUPS.map((g) => (
+                <ChoiceButton
+                  key={g.value}
+                  active={filter.capacityGroup === g.value}
+                  onClick={() => onChange({ capacityGroup: g.value })}
+                >
+                  {g.label}
+                </ChoiceButton>
+              ))}
+            </div>
+          </Section>
 
-      <Section title="1인당 가격">
-        <div className="grid grid-cols-2 gap-2">
-          {PRICE_LIMITS.map((p) => (
-            <ChoiceButton key={p.value} active={filter.maxPrice === p.value} onClick={() => onChange({ maxPrice: p.value })}>
-              {p.label}
-            </ChoiceButton>
-          ))}
-        </div>
-      </Section>
+          <Section title="1인당 가격">
+            <div className="grid grid-cols-2 gap-2">
+              {PRICE_LIMITS.map((p) => (
+                <ChoiceButton
+                  key={p.value}
+                  active={filter.maxPrice === p.value}
+                  onClick={() => onChange({ maxPrice: p.value })}
+                >
+                  {p.label}
+                </ChoiceButton>
+              ))}
+            </div>
+          </Section>
 
-      <Section title="시설">
-        <Toggle
-          checked={filter.needBeam}
-          onChange={(needBeam) => onChange({ needBeam })}
-          icon={<Video size={16} className="text-forest/60" />}
-          label="빔프로젝터 보유"
-        />
-        <Toggle
-          checked={filter.needPrivateRoom}
-          onChange={(needPrivateRoom) => onChange({ needPrivateRoom })}
-          icon={<DoorClosed size={16} className="text-forest/60" />}
-          label="프라이빗 룸"
-        />
-        <Toggle
-          checked={filter.needParking}
-          onChange={(needParking) => onChange({ needParking })}
-          icon={<Car size={16} className="text-forest/60" />}
-          label="전용 주차장"
-        />
-      </Section>
+          <Section title="시설">
+            <Toggle
+              checked={filter.needBeam}
+              onChange={(needBeam) => onChange({ needBeam })}
+              icon={<Video size={16} className="text-forest/60" />}
+              label="빔프로젝터 보유"
+            />
+            <Toggle
+              checked={filter.needPrivateRoom}
+              onChange={(needPrivateRoom) => onChange({ needPrivateRoom })}
+              icon={<DoorClosed size={16} className="text-forest/60" />}
+              label="프라이빗 룸"
+            />
+            <Toggle
+              checked={filter.needParking}
+              onChange={(needParking) => onChange({ needParking })}
+              icon={<Car size={16} className="text-forest/60" />}
+              label="전용 주차장"
+            />
+          </Section>
 
-      <Section title="행정서류">
-        <Toggle
-          checked={filter.needAdminDocs}
-          onChange={(needAdminDocs) => onChange({ needAdminDocs })}
-          icon={<FileText size={16} className="text-forest/60" />}
-          label="행정서류 4종 완비 장소만 보기"
-        />
-        <p className="mt-1 px-2 text-xs text-forest/50">
-          전자세금계산서 · 견적서 · 사업자등록증 · 관공서/법인카드 결제
-        </p>
-      </Section>
+          <Section title="행정서류">
+            <Toggle
+              checked={filter.needAdminDocs}
+              onChange={(needAdminDocs) => onChange({ needAdminDocs })}
+              icon={<FileText size={16} className="text-forest/60" />}
+              label="행정서류 4종 완비 장소만 보기"
+            />
+            <p className="mt-1 px-2 text-xs text-forest/50">
+              전자세금계산서 · 견적서 · 사업자등록증 · 관공서/법인카드 결제
+            </p>
+          </Section>
+        </>
+      )}
     </aside>
   );
 }

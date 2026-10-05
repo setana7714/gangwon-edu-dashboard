@@ -1,4 +1,4 @@
-export type Category = 'ALL' | 'MEAL' | 'CAFE' | 'VENUE';
+export type Category = 'ALL' | 'MEAL' | 'CAFE' | 'VENUE' | 'LOCAL';
 
 export interface AdminDocsSupport {
   taxInvoice: boolean;    // 전자세금계산서
@@ -10,14 +10,17 @@ export interface AdminDocsSupport {
 export interface Venue {
   id: string;
   name: string;                   // 상호명
-  category: 'MEAL' | 'CAFE' | 'VENUE'; // 카테고리 (식사/카페/연수대관)
+  category: Exclude<Category, 'ALL'>; // 카테고리 (식사/카페/연수대관/근처 밥집)
   subCategory?: string;           // 상세 분류 (예: 한정식, 숯불구이, 회의실)
+  menu?: string;                  // 대표 메뉴
   nearby?: string;                // 주요 인근 기관
   phone: string;                  // 예약 전화번호
   address: string;                // 주소
   driveMinutes?: number;          // 도교육청에서 차로 걸리는 시간(분)
+  walkMinutes?: number;           // 도교육청에서 걸어서 걸리는 시간(분)
+  delivery: boolean;              // 배달 가능 여부
   minCapacity: number;            // 최소 수용 인원 (0: 미기재)
-  maxCapacity: number;            // 최대 수용 인원 (최대 50인)
+  maxCapacity: number;            // 최대 수용 인원 (0: 미기재)
   hasBeamProjector: boolean;      // 빔프로젝터/스크린 보유 여부
   hasPrivateRoom: boolean;        // 프라이빗 룸 보유 여부
   hasParking: boolean;            // 전용 주차장 보유 여부
@@ -35,4 +38,5 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   MEAL: '식사',
   CAFE: '카페',
   VENUE: '연수·대관',
+  LOCAL: '근처 밥집',
 };
