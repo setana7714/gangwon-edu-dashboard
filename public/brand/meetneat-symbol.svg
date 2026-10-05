@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="밋앤잇 심볼">
+  <rect width="240" height="240" rx="64" fill="#FFF7E8"/>
+  <path d="M120 30C71 30 35 67 35 113c0 62 85 100 85 100s85-38 85-100c0-46-36-83-85-83Z" fill="#9CE6D3" stroke="#173B3F" stroke-width="9"/>
+  <circle cx="120" cy="109" r="53" fill="#FFF7E8" stroke="#173B3F" stroke-width="8"/>
+  <circle cx="100" cy="102" r="7" fill="#173B3F"/><circle cx="140" cy="102" r="7" fill="#173B3F"/>
+  <path d="M98 126c12 15 32 15 44 0" fill="none" stroke="#173B3F" stroke-width="8" stroke-linecap="round"/>
+  <path d="m85 76 8-14M155 76l-8-14" stroke="#FF8368" stroke-width="8" stroke-linecap="round"/>
+  <path d="M186 73v42M198 73v42M210 73v42M186 115h24M198 115v43" fill="none" stroke="#FF8368" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

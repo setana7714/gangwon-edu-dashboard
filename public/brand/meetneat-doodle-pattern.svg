@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="180" viewBox="0 0 420 180">
+  <rect width="420" height="180" fill="#173B3F"/>
+  <g fill="none" stroke="#9CE6D3" stroke-width="4" opacity=".9">
+    <path d="M15 38c18-18 36-18 54 0-18 18-36 18-54 0Zm15-16c10 6 18 12 24 20"/>
+    <path d="M123 130c13-24 27-32 42-24 15 8 17 24 5 48-18-1-34-9-47-24Z"/>
+    <path d="M247 36c12-16 28-18 47-6M252 51c15-12 31-12 48 0"/>
+    <path d="M335 118c18-9 36-9 54 0-18 16-36 16-54 0Z"/>
+  </g>
+  <g fill="#FF8368">
+    <circle cx="92" cy="58" r="5"/><circle cx="218" cy="112" r="7"/><circle cx="312" cy="32" r="4"/><circle cx="390" cy="66" r="6"/>
+  </g>
+  <g fill="#FFF7E8" font-family="Pretendard, sans-serif" font-weight="800" font-size="15" letter-spacing="2">
+    <text x="18" y="160">MEET • EAT • WORK WELL</text>
+  </g>
+</svg>

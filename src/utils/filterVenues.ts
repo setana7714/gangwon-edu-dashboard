@@ -29,6 +29,11 @@ export function hasAllAdminDocs(v: Venue): boolean {
   return taxInvoice && quotation && businessReg && corpCard;
 }
 
+// 추천 픽 배지 기준: 평점 4.5 이상
+export function isRecommended(v: Venue): boolean {
+  return v.rating >= 4.5;
+}
+
 export function filterVenues(venues: Venue[], filter: FilterState): Venue[] {
   const keyword = filter.keyword.trim().toLowerCase();
 

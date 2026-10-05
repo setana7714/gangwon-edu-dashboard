@@ -3,5 +3,13 @@
 @tailwind utilities;
 
 body {
-  @apply bg-slate-100 text-slate-800 antialiased;
+  @apply bg-vanilla text-forest antialiased;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.04em;
 }

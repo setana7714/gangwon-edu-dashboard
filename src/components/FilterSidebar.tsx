@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Car, DoorClosed, FileText, RotateCcw, Search, Video } from 'lucide-react';
 import { CATEGORY_LABEL, type Category } from '../types/venue';
 import type { FilterState } from '../utils/filterVenues';
+import BrandIcon from './BrandIcon';
 
 interface Props {
   filter: FilterState;
@@ -28,7 +29,7 @@ const PRICE_LIMITS = [
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <h3 className="mb-2 text-xs font-semibold tracking-wide text-slate-500">{title}</h3>
+      <h3 className="mb-2 text-xs font-bold text-forest/60">{title}</h3>
       {children}
     </section>
   );
@@ -40,10 +41,10 @@ function ChoiceButton({ active, onClick, children }: { active: boolean; onClick:
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
+      className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition ${
         active
-          ? 'border-blue-700 bg-blue-700 text-white'
-          : 'border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50'
+          ? 'border-forest bg-mint font-bold text-forest'
+          : 'border-sage bg-white font-medium text-forest/80 hover:border-mint hover:bg-mint/20'
       }`}
     >
       {children}
@@ -63,8 +64,8 @@ function Toggle({
   label: string;
 }) {
   return (
-    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-2 hover:bg-slate-50">
-      <span className="flex items-center gap-2 text-sm text-slate-700">
+    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-2xl px-2 py-2 hover:bg-vanilla">
+      <span className="flex items-center gap-2 text-sm">
         {icon}
         {label}
       </span>
@@ -74,20 +75,20 @@ function Toggle({
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
       />
-      <span className="relative h-5 w-9 shrink-0 rounded-full bg-slate-300 transition after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:transition peer-checked:bg-blue-700 peer-checked:after:translate-x-4 peer-focus-visible:ring-2 peer-focus-visible:ring-blue-400" />
+      <span className="relative h-5 w-9 shrink-0 rounded-full bg-sage transition after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:transition peer-checked:bg-mint peer-checked:after:translate-x-4 peer-checked:after:bg-forest peer-focus-visible:ring-2 peer-focus-visible:ring-forest" />
     </label>
   );
 }
 
 export default function FilterSidebar({ filter, onChange, onReset }: Props) {
   return (
-    <aside className="w-full shrink-0 space-y-5 rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:sticky lg:top-6 lg:w-72">
+    <aside className="w-full shrink-0 space-y-5 rounded-card border border-sage bg-white p-5 shadow-card lg:sticky lg:top-6 lg:w-72">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-bold text-slate-900">조건 선택</h2>
+        <h2 className="text-base font-extrabold">조건 선택</h2>
         <button
           type="button"
           onClick={onReset}
-          className="flex items-center gap-1 text-xs text-slate-500 hover:text-blue-700"
+          className="flex items-center gap-1 text-xs font-medium text-forest/60 hover:text-forest"
         >
           <RotateCcw size={14} />
           초기화
@@ -96,13 +97,13 @@ export default function FilterSidebar({ filter, onChange, onReset }: Props) {
 
       <label className="relative block">
         <span className="sr-only">상호명 검색</span>
-        <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-forest/40" />
         <input
           type="search"
           value={filter.keyword}
           onChange={(e) => onChange({ keyword: e.target.value })}
           placeholder="상호명 · 주소 · 인근 기관 검색"
-          className="w-full rounded-lg border border-slate-200 py-2 pl-9 pr-3 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
+          className="w-full rounded-full border border-sage bg-white py-2 pl-10 pr-4 text-sm placeholder:text-forest/40 focus:border-forest focus:outline-none"
         />
       </label>
 
@@ -110,6 +111,7 @@ export default function FilterSidebar({ filter, onChange, onReset }: Props) {
         <div className="grid grid-cols-2 gap-2">
           {CATEGORIES.map((c) => (
             <ChoiceButton key={c} active={filter.category === c} onClick={() => onChange({ category: c })}>
+              {c !== 'ALL' && <BrandIcon name={c} size={26} />}
               {CATEGORY_LABEL[c]}
             </ChoiceButton>
           ))}
@@ -144,19 +146,19 @@ export default function FilterSidebar({ filter, onChange, onReset }: Props) {
         <Toggle
           checked={filter.needBeam}
           onChange={(needBeam) => onChange({ needBeam })}
-          icon={<Video size={16} className="text-slate-500" />}
+          icon={<Video size={16} className="text-forest/60" />}
           label="빔프로젝터 보유"
         />
         <Toggle
           checked={filter.needPrivateRoom}
           onChange={(needPrivateRoom) => onChange({ needPrivateRoom })}
-          icon={<DoorClosed size={16} className="text-slate-500" />}
+          icon={<DoorClosed size={16} className="text-forest/60" />}
           label="프라이빗 룸"
         />
         <Toggle
           checked={filter.needParking}
           onChange={(needParking) => onChange({ needParking })}
-          icon={<Car size={16} className="text-slate-500" />}
+          icon={<Car size={16} className="text-forest/60" />}
           label="전용 주차장"
         />
       </Section>
@@ -165,10 +167,10 @@ export default function FilterSidebar({ filter, onChange, onReset }: Props) {
         <Toggle
           checked={filter.needAdminDocs}
           onChange={(needAdminDocs) => onChange({ needAdminDocs })}
-          icon={<FileText size={16} className="text-slate-500" />}
+          icon={<FileText size={16} className="text-forest/60" />}
           label="행정서류 4종 완비 장소만 보기"
         />
-        <p className="mt-1 px-2 text-xs leading-relaxed text-slate-400">
+        <p className="mt-1 px-2 text-xs text-forest/50">
           전자세금계산서 · 견적서 · 사업자등록증 · 관공서/법인카드 결제
         </p>
       </Section>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" role="img" aria-labelledby="title desc">
+  <title id="title">밋앤잇 로고</title>
+  <desc id="desc">민트색 지도핀 안에 웃는 얼굴과 주황색 포크가 있는 밋앤잇 로고</desc>
+  <defs>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#173B3F" flood-opacity=".14"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M104 24C57 24 22 59 22 104c0 61 82 99 82 99s82-38 82-99c0-45-35-80-82-80Z" fill="#9CE6D3" stroke="#173B3F" stroke-width="7"/>
+    <circle cx="104" cy="101" r="52" fill="#FFF7E8" stroke="#173B3F" stroke-width="6"/>
+    <circle cx="85" cy="94" r="6.5" fill="#173B3F"/>
+    <circle cx="123" cy="94" r="6.5" fill="#173B3F"/>
+    <path d="M83 116c11 13 31 13 42 0" fill="none" stroke="#173B3F" stroke-width="6" stroke-linecap="round"/>
+    <path d="m72 70 7-12M136 70l-7-12" stroke="#FF8368" stroke-width="6" stroke-linecap="round"/>
+    <path d="M167 63c18 13 24 34 17 54-7 20-22 31-42 35" fill="none" stroke="#FF8368" stroke-width="12" stroke-linecap="round"/>
+    <path d="M181 52v38M192 52v38M203 52v38M181 90h22M192 90v48" fill="none" stroke="#FF8368" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g fill="#173B3F">
+    <text x="236" y="125" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="76" font-weight="800" letter-spacing="-5">밋앤잇</text>
+    <text x="242" y="164" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="18" font-weight="700" letter-spacing="3">MEET • EAT • WORK WELL</text>
+  </g>
+</svg>
