@@ -31,9 +31,9 @@ export function hasAllAdminDocs(v: Venue): boolean {
   return Boolean(taxInvoice && quotation && businessReg && corpCard);
 }
 
-// 추천 픽 배지 기준: 평점 4.5 이상
+// 추천 픽 배지 기준: 평점 4.5 이상이면서 평가 10건 이상
 export function isRecommended(v: Venue): boolean {
-  return v.rating >= 4.5;
+  return v.rating >= 4.5 && v.reviewCount >= 10;
 }
 
 export function filterVenues(venues: Venue[], filter: FilterState): Venue[] {
