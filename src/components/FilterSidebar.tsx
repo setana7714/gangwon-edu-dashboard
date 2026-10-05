@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Bike, Car, DoorClosed, FileText, Footprints, RotateCcw, Video } from 'lucide-react';
 import { CATEGORY_LABEL, type Category } from '../types/venue';
 import type { FilterState } from '../utils/filterVenues';
-import { CategoryIcon } from './BrandIcon';
+import { CategoryIcon, RiceBowlIcon } from './BrandIcon';
 
 interface Props {
   filter: FilterState;
@@ -10,7 +10,7 @@ interface Props {
   onReset: () => void;
 }
 
-const CATEGORIES: Category[] = ['ALL', 'MEAL', 'CAFE', 'VENUE', 'LOCAL'];
+const CATEGORIES: Exclude<Category, 'LOCAL'>[] = ['ALL', 'MEAL', 'CAFE', 'VENUE'];
 
 const CAPACITY_GROUPS = [
   { value: 0, label: '전체' },
@@ -35,17 +35,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function ChoiceButton({
-  active,
-  onClick,
-  className = '',
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  className?: string;
-  children: ReactNode;
-}) {
+function ChoiceButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
   return (
     <button
       type="button"
@@ -55,7 +45,7 @@ function ChoiceButton({
         active
           ? 'border-forest bg-mint font-bold text-forest'
           : 'border-sage bg-white font-medium text-forest/80 hover:border-mint hover:bg-mint/20'
-      } ${className}`}
+      }`}
     >
       {children}
     </button>
@@ -107,21 +97,30 @@ export default function FilterSidebar({ filter, onChange, onReset }: Props) {
         </button>
       </div>
 
-      <Section title="카테고리">
+      <Section title="무엇을 찾나요?">
         <div className="grid grid-cols-2 gap-2">
-          {CATEGORIES.map((c) => (
-            <ChoiceButton
-              key={c}
-              active={filter.category === c}
-              onClick={() => onChange({ category: c })}
-              className={c === 'ALL' ? 'col-span-2' : ''}
-            >
-              {c !== 'ALL' && <CategoryIcon category={c} size={26} />}
-              {CATEGORY_LABEL[c]}
-            </ChoiceButton>
-          ))}
+          <ChoiceButton active={!isLocal} onClick={() => onChange({ category: 'ALL' })}>
+            업무 장소
+          </ChoiceButton>
+          <ChoiceButton active={isLocal} onClick={() => onChange({ category: 'LOCAL' })}>
+            <RiceBowlIcon size={26} />
+            {CATEGORY_LABEL.LOCAL}
+          </ChoiceButton>
         </div>
       </Section>
+
+      {!isLocal && (
+        <Section title="카테고리">
+          <div className="grid grid-cols-2 gap-2">
+            {CATEGORIES.map((c) => (
+              <ChoiceButton key={c} active={filter.category === c} onClick={() => onChange({ category: c })}>
+                {c !== 'ALL' && <CategoryIcon category={c} size={26} />}
+                {CATEGORY_LABEL[c]}
+              </ChoiceButton>
+            ))}
+          </div>
+        </Section>
+      )}
 
       {isLocal ? (
         <Section title="이용 방법">

@@ -1,4 +1,3 @@
-import { Bike } from 'lucide-react';
 import type { Venue } from '../types/venue';
 
 // meetneat-icons.svg(640x160, 아이콘 4개가 한 줄) 원본을 그대로 두고 필요한 칸만 잘라서 보여줌
@@ -33,16 +32,21 @@ export default function BrandIcon({ name, size = 28 }: { name: BrandIconName; si
   );
 }
 
-// 근처 밥집은 디자인 키트에 아이콘이 없어 민트 원 + 선 아이콘으로 대체
-export function CategoryIcon({ category, size = 28 }: { category: Venue['category']; size?: number }) {
-  if (category !== 'LOCAL') return <BrandIcon name={category} size={size} />;
+// 근처 밥집은 디자인 키트에 아이콘이 없어, 키트 아이콘과 같은 규칙(민트 원 + 굵은 선)으로 밥그릇을 그림
+export function RiceBowlIcon({ size = 28 }: { size?: number }) {
   return (
-    <span
-      aria-hidden="true"
-      className="inline-flex shrink-0 items-center justify-center rounded-full bg-mint"
-      style={{ width: size, height: size }}
-    >
-      <Bike size={size * 0.6} />
-    </span>
+    <svg width={size} height={size} viewBox="0 0 120 120" aria-hidden="true" className="shrink-0">
+      <circle cx="60" cy="60" r="58" fill="#9CE6D3" />
+      <g fill="#FFF7E8" stroke="#173B3F" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M36 58c1-15 11-24 24-24s23 9 24 24Z" />
+        <path d="M28 58h64c0 20-13 33-32 33S28 78 28 58Z" fill="#FF8368" />
+        <path d="M48 96h24" fill="none" />
+      </g>
+    </svg>
   );
+}
+
+export function CategoryIcon({ category, size = 28 }: { category: Venue['category']; size?: number }) {
+  if (category === 'LOCAL') return <RiceBowlIcon size={size} />;
+  return <BrandIcon name={category} size={size} />;
 }

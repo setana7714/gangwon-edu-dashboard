@@ -40,8 +40,8 @@ export function filterVenues(venues: Venue[], filter: FilterState): Venue[] {
   const isLocal = filter.category === 'LOCAL';
 
   return venues.filter((v) => {
-    // 1. 카테고리 필터
-    if (filter.category !== 'ALL' && v.category !== filter.category) {
+    // 1. 카테고리 필터 ('전체'는 업무 장소 전체 — 근처 밥집은 따로 봄)
+    if (filter.category === 'ALL' ? v.category === 'LOCAL' : v.category !== filter.category) {
       return false;
     }
 
