@@ -3,6 +3,7 @@ import type { Venue } from '../types/venue';
 import { GOOGLE_SHEET_CSV_URL, GOOGLE_SHEET_LOCAL_CSV_URL } from '../config';
 
 const FALLBACK_CSV_URL = 'data/venues.csv';
+const FALLBACK_LOCAL_CSV_URL = 'data/local.csv';
 
 type CsvRow = Record<string, string | undefined>;
 
@@ -83,10 +84,16 @@ async function loadBusinessVenues(): Promise<Venue[]> {
 }
 
 // 근처 밥집 시트의 행은 카테고리 열이 없어도 모두 근처 밥집으로 처리
+// 구글 시트 → public/data/local.csv(예비) 순으로 시도
 async function loadLocalVenues(): Promise<Venue[]> {
-  if (!GOOGLE_SHEET_LOCAL_CSV_URL) return [];
-  const venues = await loadCsv(GOOGLE_SHEET_LOCAL_CSV_URL).catch(() => null);
-  return (venues ?? []).map((v, i) => ({ ...v, id: `local-${i + 1}`, category: 'LOCAL' }));
+  const urls = [GOOGLE_SHEET_LOCAL_CSV_URL, FALLBACK_LOCAL_CSV_URL].filter(Boolean);
+  for (const url of urls) {
+    const venues = await loadCsv(url).catch(() => null);
+    if (venues && venues.length > 0) {
+      return venues.map((v, i) => ({ ...v, id: `local-${i + 1}`, category: 'LOCAL' }));
+    }
+  }
+  return [];
 }
 
 export async function loadVenues(): Promise<Venue[]> {
