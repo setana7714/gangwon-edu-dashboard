@@ -10,6 +10,19 @@ import type { Venue } from './types/venue';
 import { filterVenues, getAvailability, INITIAL_FILTER, type FilterState } from './utils/filterVenues';
 import { loadVenues } from './utils/loadVenues';
 
+// 지금 화면의 프로그램 파일과 서버에 올라간 최신 파일이 다르면 새 버전이 배포된 것
+async function isNewVersionPublished(): Promise<boolean> {
+  const current = document.querySelector<HTMLScriptElement>('script[src*="assets/index-"]')?.getAttribute('src');
+  if (!current) return false; // 개발 서버에서는 확인하지 않음
+  try {
+    const html = await (await fetch('./', { cache: 'no-store' })).text();
+    const latest = html.match(/assets\/index-[^"']+\.js/)?.[0];
+    return Boolean(latest && !current.endsWith(latest));
+  } catch {
+    return false;
+  }
+}
+
 export default function App() {
   const [venues, setVenues] = useState<Venue[]>([]);
   const [filter, setFilter] = useState<FilterState>(INITIAL_FILTER);
@@ -21,6 +34,18 @@ export default function App() {
       .then(setVenues)
       .catch((e: unknown) => setError(e instanceof Error ? e.message : '장소 데이터를 불러오지 못했습니다.'))
       .finally(() => setLoading(false));
+
+    // 열어 둔 화면으로 돌아오면 새로고침 없이 최신 상태로 맞춤
+    const onVisible = async () => {
+      if (document.visibilityState !== 'visible') return;
+      if (await isNewVersionPublished()) {
+        window.location.reload();
+        return;
+      }
+      loadVenues().then(setVenues).catch(() => {});
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
   }, []);
 
   const filtered = useMemo(() => filterVenues(venues, filter), [venues, filter]);
