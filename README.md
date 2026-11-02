@@ -50,3 +50,9 @@ npm run build    # dist/ 에 배포용 파일 생성
 
 `main` 브랜치에 올리면(push) `.github/workflows/deploy.yml` 이 자동으로 빌드·배포.
 저장소 `Settings → Pages → Source` 를 `GitHub Actions` 로 한 번 설정해야 함.
+
+## 시트를 거치지 않는 보충 파일
+
+`public/data/venues-extra.csv`(업무 장소), `public/data/local-extra.csv`(근처 밥집)에 적은 행은 구글 시트 내용과 **상호명 기준으로 합쳐져** 사이트에 나옴.
+- 시트에 같은 상호가 있으면 보충 파일에서 채운 칸만 덮어씀
+- 시트에 없는 상호는 목록 뒤에 추가됨
