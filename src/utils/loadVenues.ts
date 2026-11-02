@@ -58,7 +58,8 @@ function rowToVenue(row: CsvRow, index: number): Venue {
 }
 
 async function loadCsv(url: string): Promise<Venue[] | null> {
-  const res = await fetch(url);
+  // 브라우저에 저장된 예전 목록 대신 항상 시트의 최신 내용을 받음
+  const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) return null;
   const { data, meta } = Papa.parse<CsvRow>(await res.text(), {
     header: true,
