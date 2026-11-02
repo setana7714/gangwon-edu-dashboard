@@ -6,6 +6,16 @@ body {
   @apply bg-vanilla text-forest antialiased;
   line-height: 1.6;
   word-break: keep-all;
+  /* 만화 망점 느낌의 옅은 점무늬 배경 */
+  background-image: radial-gradient(rgb(23 59 63 / 0.08) 1px, transparent 1.2px);
+  background-size: 14px 14px;
+}
+
+/* 누르는 버튼: 그림자 쪽으로 살짝 눌림 */
+@layer components {
+  .btn-pop {
+    @apply border-2 border-forest shadow-pop-sm transition active:translate-x-[3px] active:translate-y-[3px] active:shadow-none;
+  }
 }
 
 h1,

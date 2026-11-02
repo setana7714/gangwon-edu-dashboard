@@ -11,7 +11,7 @@ interface Props {
 export default function VenueGrid({ venues, hasAny, onReset }: Props) {
   if (venues.length === 0) {
     return (
-      <div className="mt-4 overflow-hidden rounded-card border border-sage bg-white text-center shadow-card">
+      <div className="mt-4 overflow-hidden rounded-card border-2 border-forest bg-white text-center shadow-pop">
         <div
           aria-hidden="true"
           className="h-[120px] bg-forest bg-repeat-x"
@@ -27,7 +27,7 @@ export default function VenueGrid({ venues, hasAny, onReset }: Props) {
               <button
                 type="button"
                 onClick={onReset}
-                className="mt-4 rounded-full bg-coral px-5 py-2 text-sm font-bold transition hover:brightness-95"
+                className="btn-pop mt-4 rounded-full bg-coral px-5 py-2 text-sm font-bold"
               >
                 필터 초기화하기
               </button>
@@ -41,7 +41,7 @@ export default function VenueGrid({ venues, hasAny, onReset }: Props) {
   }
 
   return (
-    <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <div className="mt-4 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
       {venues.map((v) => (
         <VenueCard key={v.id} venue={v} />
       ))}

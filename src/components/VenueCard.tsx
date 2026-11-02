@@ -37,15 +37,15 @@ export default function VenueCard({ venue }: { venue: Venue }) {
   ].filter(Boolean);
 
   return (
-    <article className="flex flex-col rounded-card border border-sage bg-white p-5 shadow-card">
+    <article className="flex flex-col rounded-card border-2 border-forest bg-white p-5 shadow-pop transition hover:-translate-y-0.5">
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="flex items-center gap-1.5 rounded-full border border-sage bg-vanilla py-0.5 pl-0.5 pr-2.5 text-xs font-bold">
+          <span className="flex items-center gap-1.5 rounded-full border-2 border-forest bg-vanilla py-0.5 pl-0.5 pr-2.5 text-xs font-bold">
             <CategoryIcon category={venue.category} size={24} />
             {CATEGORY_LABEL[venue.category]}
           </span>
           {isRecommended(venue) && (
-            <span className="flex items-center gap-1 rounded-full bg-coral py-0.5 pl-0.5 pr-2.5 text-xs font-bold">
+            <span className="flex rotate-2 items-center gap-1 rounded-full border-2 border-forest bg-coral py-0.5 pl-0.5 pr-2.5 text-xs font-extrabold">
               <BrandIcon name="PICK" size={24} />
               추천 픽
             </span>
@@ -120,7 +120,7 @@ export default function VenueCard({ venue }: { venue: Venue }) {
               {b}
             </span>
           ))}
-          {docsComplete && <span className="rounded-full bg-mint px-2.5 py-1 text-xs font-bold">행정서류 완비</span>}
+          {docsComplete && <span className="rounded-full bg-butter px-2.5 py-1 text-xs font-bold">행정서류 완비</span>}
         </div>
       )}
 
@@ -159,7 +159,7 @@ export default function VenueCard({ venue }: { venue: Venue }) {
         {venue.phone && (
           <a
             href={`tel:${venue.phone}`}
-            className="flex items-center justify-center gap-1.5 rounded-full bg-coral px-3 py-2 text-sm font-bold transition hover:brightness-95"
+            className="btn-pop flex items-center justify-center gap-1.5 rounded-full bg-coral px-3 py-2 text-sm font-bold"
           >
             <Phone size={14} />
             {isLocal ? '전화로 주문·문의하기' : '전화로 자리 확인하기'}
@@ -169,7 +169,7 @@ export default function VenueCard({ venue }: { venue: Venue }) {
           href={mapLink(venue)}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-1.5 rounded-full border border-forest px-3 py-2 text-sm font-bold transition hover:bg-forest hover:text-vanilla"
+          className="btn-pop flex items-center justify-center gap-1.5 rounded-full bg-white px-3 py-2 text-sm font-bold hover:bg-butter"
         >
           <MapPin size={14} />
           지도에서 살펴보기

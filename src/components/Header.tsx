@@ -3,7 +3,7 @@ const DOODLE = 'url(brand/meetneat-doodle-pattern.svg)';
 export default function Header() {
   return (
     <>
-      <header className="border-b border-sage bg-vanilla">
+      <header className="border-b-2 border-forest bg-vanilla">
         <div className="mx-auto max-w-7xl px-4 py-4">
           {/* 로고 그림 안 글자(밋앤잇)가 새 이름과 달라, 심볼 + 이름 글자로 구성 */}
           <a href="./" className="flex w-fit items-center gap-3">
@@ -21,19 +21,22 @@ export default function Header() {
       </header>
 
       <section className="mx-auto w-full max-w-7xl px-4 pt-6">
-        <div className="relative overflow-hidden rounded-card bg-forest text-vanilla">
+        <div className="relative overflow-hidden rounded-card border-2 border-forest bg-forest text-vanilla shadow-pop">
           <div
             aria-hidden="true"
             className="absolute inset-y-0 right-0 hidden w-[420px] bg-cover bg-center md:block"
             style={{ backgroundImage: DOODLE }}
           />
           <div className="relative px-6 py-8 sm:px-8 md:pr-[440px]">
-            <p className="text-xs font-extrabold tracking-[0.15em] text-coral">MEET • EAT • WORK WELL</p>
-            <h1 className="mt-2 text-2xl font-extrabold leading-tight sm:text-3xl">
-              오늘의 업무, 장소 고르기부터 가볍게.
+            <span className="inline-block -rotate-3 rounded-full border-2 border-forest bg-coral px-3 py-1 text-xs font-extrabold text-forest shadow-pop-sm">
+              꼬르륵… 🍚
+            </span>
+            <h1 className="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl">
+              일도 <span className="text-butter">밥심</span>부터!
             </h1>
-            <p className="mt-3 max-w-xl text-sm text-vanilla/80 sm:text-base">
-              오찬 미팅, 팀 회식, 미팅 카페, 연수·대관까지. 춘천의 업무 장소와 근처 밥집을 한곳에서 골라보세요.
+            <p className="mt-3 max-w-xl text-sm text-vanilla/85 sm:text-base">
+              배고프면 결재도 안 넘어가요. 점심 오찬부터 초근 저녁까지, 도교육청 근처 밥집·카페·연수 장소를
+              골라보세요.
             </p>
           </div>
         </div>

@@ -10,7 +10,7 @@ interface Props {
 
 export default function SummaryBar({ count, total, adminDocsOnly, sortBy, onSortChange }: Props) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-card border border-sage bg-white px-5 py-3 shadow-card">
+    <div className="flex items-center justify-between gap-3 rounded-card border-2 border-forest bg-white px-5 py-3 shadow-pop">
       <div>
         <p className="text-sm">
           총 <strong className="text-lg font-extrabold">{count}</strong>곳을 찾았어요
@@ -25,7 +25,7 @@ export default function SummaryBar({ count, total, adminDocsOnly, sortBy, onSort
         <select
           value={sortBy}
           onChange={(e) => onSortChange(e.target.value as FilterState['sortBy'])}
-          className="rounded-full border border-sage bg-white px-3 py-1.5 text-sm font-medium text-forest focus:border-forest focus:outline-none"
+          className="rounded-full border-2 border-forest bg-white px-3 py-1.5 text-sm font-bold text-forest focus:border-forest focus:outline-none"
         >
           <option value="RATING">평점순</option>
           <option value="NAME">이름순</option>

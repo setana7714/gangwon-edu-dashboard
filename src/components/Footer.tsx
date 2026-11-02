@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="mt-12 bg-forest text-vanilla">
+    <footer className="mt-12 border-t-2 border-forest bg-forest text-vanilla">
       <div
         aria-hidden="true"
         className="h-[135px] bg-repeat-x"

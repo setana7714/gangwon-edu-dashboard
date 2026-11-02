@@ -42,10 +42,10 @@ function ChoiceButton({ active, onClick, children }: { active: boolean; onClick:
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition ${
+      className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-full border-2 px-3 py-1.5 text-sm transition ${
         active
-          ? 'border-forest bg-mint font-bold text-forest'
-          : 'border-sage bg-white font-medium text-forest/80 hover:border-mint hover:bg-mint/20'
+          ? 'border-forest bg-butter font-extrabold text-forest shadow-pop-sm'
+          : 'border-forest/20 bg-white font-medium text-forest/80 hover:border-forest hover:bg-butter/30'
       }`}
     >
       {children}
@@ -76,7 +76,7 @@ function Toggle({
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
       />
-      <span className="relative h-5 w-9 shrink-0 rounded-full bg-sage transition after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:transition peer-checked:bg-mint peer-checked:after:translate-x-4 peer-checked:after:bg-forest peer-focus-visible:ring-2 peer-focus-visible:ring-forest" />
+      <span className="relative h-5 w-9 shrink-0 rounded-full bg-sage transition after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:transition peer-checked:bg-butter peer-checked:after:translate-x-4 peer-checked:after:bg-forest peer-focus-visible:ring-2 peer-focus-visible:ring-forest" />
     </label>
   );
 }
@@ -86,7 +86,7 @@ export default function FilterSidebar({ filter, available, onChange, onReset }: 
   const hasFacility = available.beam || available.privateRoom || available.parking;
 
   return (
-    <aside className="w-full shrink-0 space-y-5 rounded-card border border-sage bg-white p-5 shadow-card lg:sticky lg:top-6 lg:w-72">
+    <aside className="w-full shrink-0 space-y-5 rounded-card border-2 border-forest bg-white p-5 shadow-pop lg:sticky lg:top-6 lg:w-72">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-extrabold">조건 선택</h2>
         <button
