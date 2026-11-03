@@ -4,6 +4,14 @@ import { CATEGORY_LABEL, type AdminDocsSupport, type Venue } from '../types/venu
 import { hasAllAdminDocs, isRecommended } from '../utils/filterVenues';
 import BrandIcon, { CategoryIcon } from './BrandIcon';
 
+// 카테고리별 파스텔 색 칩
+const CATEGORY_CHIP: Record<Venue['category'], string> = {
+  MEAL: 'bg-coral/30',
+  CAFE: 'bg-mint/60',
+  VENUE: 'bg-sky',
+  LOCAL: 'bg-butter/70',
+};
+
 const ADMIN_DOCS: { key: keyof AdminDocsSupport; label: string }[] = [
   { key: 'taxInvoice', label: '세금계산서' },
   { key: 'quotation', label: '견적서' },
@@ -37,10 +45,10 @@ export default function VenueCard({ venue }: { venue: Venue }) {
   ].filter(Boolean);
 
   return (
-    <article className="flex flex-col rounded-card border-2 border-forest bg-white p-5 shadow-pop transition hover:-translate-y-0.5">
+    <article className="flex flex-col rounded-card border-2 border-forest bg-white p-5 shadow-pop transition duration-200 motion-safe:animate-pop-in hover:-translate-y-1.5 hover:rotate-0 hover:shadow-[7px_7px_0_0_#173B3F] odd:-rotate-[0.6deg] even:rotate-[0.6deg]">
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="flex items-center gap-1.5 rounded-full border-2 border-forest bg-vanilla py-0.5 pl-0.5 pr-2.5 text-xs font-bold">
+          <span className={`flex items-center gap-1.5 rounded-full border-2 border-forest py-0.5 pl-0.5 pr-2.5 text-xs font-bold ${CATEGORY_CHIP[venue.category]}`}>
             <CategoryIcon category={venue.category} size={24} />
             {CATEGORY_LABEL[venue.category]}
           </span>
@@ -60,7 +68,7 @@ export default function VenueCard({ venue }: { venue: Venue }) {
         )}
       </div>
 
-      <h3 className="mt-2 text-lg font-extrabold leading-snug">{venue.name}</h3>
+      <h3 className="mt-2 text-2xl leading-snug">{venue.name}</h3>
       {venue.subCategory && <p className="text-xs text-forest/60">{venue.subCategory}</p>}
 
       <dl className="mt-3 space-y-1.5 text-sm text-forest/80">

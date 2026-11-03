@@ -22,7 +22,7 @@ export default function VenueGrid({ venues, hasAny, onReset }: Props) {
           {hasAny ? (
             <>
               <p className="mt-2 text-sm font-medium">
-                음, 이 조건으로는 딱 맞는 곳이 없어요. 필터를 살짝 풀어볼까요?
+                앗, 이 조건엔 아무도 없어요 🥲 필터를 살짝 풀어볼까요?
               </p>
               <button
                 type="button"
@@ -33,7 +33,7 @@ export default function VenueGrid({ venues, hasAny, onReset }: Props) {
               </button>
             </>
           ) : (
-            <p className="mt-2 text-sm font-medium">아직 등록된 곳이 없어요. 곧 채워둘게요.</p>
+            <p className="mt-2 text-sm font-medium">아직 비어 있어요 🍽️ 곧 맛있는 곳으로 채워둘게요!</p>
           )}
         </div>
       </div>

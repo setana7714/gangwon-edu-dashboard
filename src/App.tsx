@@ -75,7 +75,7 @@ export default function App() {
             <div className="mb-4 flex items-center gap-3 px-1">
               <RiceBowlIcon size={44} />
               <div>
-                <h2 className="text-xl font-extrabold leading-tight">근처 밥집</h2>
+                <h2 className="text-3xl leading-tight">근처 밥집</h2>
                 <p className="text-sm text-forest/70">오늘 초근 때 뭐먹지?</p>
               </div>
             </div>
@@ -90,7 +90,7 @@ export default function App() {
           {loading ? (
             <div className="mt-10 flex flex-col items-center text-sm text-forest/60">
               <FaceDots />
-              장소를 불러오는 중이에요…
+              밥 짓는 중이에요… 🍚
             </div>
           ) : error ? (
             <p className="mt-10 text-center text-sm font-medium">{error}</p>

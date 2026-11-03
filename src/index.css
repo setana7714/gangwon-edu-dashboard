@@ -21,5 +21,17 @@ body {
 h1,
 h2,
 h3 {
-  letter-spacing: -0.04em;
+  font-family: 'Jua', 'Pretendard Variable', Pretendard, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* 움직임을 줄이고 싶은 기기 설정이면 애니메이션 끔 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
 }

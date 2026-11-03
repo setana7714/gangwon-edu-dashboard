@@ -42,7 +42,7 @@ function ChoiceButton({ active, onClick, children }: { active: boolean; onClick:
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-full border-2 px-3 py-1.5 text-sm transition ${
+      className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-full border-2 px-3 py-1.5 text-sm transition duration-150 hover:-rotate-1 hover:scale-105 active:scale-95 ${
         active
           ? 'border-forest bg-butter font-extrabold text-forest shadow-pop-sm'
           : 'border-forest/20 bg-white font-medium text-forest/80 hover:border-forest hover:bg-butter/30'
@@ -88,7 +88,7 @@ export default function FilterSidebar({ filter, available, onChange, onReset }: 
   return (
     <aside className="w-full shrink-0 space-y-5 rounded-card border-2 border-forest bg-white p-5 shadow-pop lg:sticky lg:top-6 lg:w-72">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-extrabold">조건 선택</h2>
+        <h2 className="text-xl">🎛️ 조건 선택</h2>
         <button
           type="button"
           onClick={onReset}
@@ -99,7 +99,7 @@ export default function FilterSidebar({ filter, available, onChange, onReset }: 
         </button>
       </div>
 
-      <Section title="무엇을 찾나요?">
+      <Section title="👀 무엇을 찾나요?">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1">
           <ChoiceButton active={!isLocal} onClick={() => onChange({ category: 'ALL' })}>
             <span className="leading-tight">
@@ -118,7 +118,7 @@ export default function FilterSidebar({ filter, available, onChange, onReset }: 
       </Section>
 
       {!isLocal && (
-        <Section title="카테고리">
+        <Section title="🍴 카테고리">
           <div className="grid grid-cols-2 gap-2">
             {CATEGORIES.map((c) => (
               <ChoiceButton key={c} active={filter.category === c} onClick={() => onChange({ category: c })}>
@@ -131,7 +131,7 @@ export default function FilterSidebar({ filter, available, onChange, onReset }: 
       )}
 
       {isLocal && (available.delivery || available.walkable) && (
-        <Section title="이용 방법">
+        <Section title="🛵 이용 방법">
           {available.delivery && (
             <Toggle
               checked={filter.needDelivery}
@@ -152,7 +152,7 @@ export default function FilterSidebar({ filter, available, onChange, onReset }: 
       )}
 
       {!isLocal && available.capacity && (
-        <Section title="인원">
+        <Section title="👥 인원">
           <div className="grid grid-cols-2 gap-2">
             {CAPACITY_GROUPS.map((g) => (
               <ChoiceButton
@@ -168,7 +168,7 @@ export default function FilterSidebar({ filter, available, onChange, onReset }: 
       )}
 
       {!isLocal && available.price && (
-        <Section title="1인당 가격">
+        <Section title="💰 1인당 가격">
           <div className="grid grid-cols-2 gap-2">
             {PRICE_LIMITS.map((p) => (
               <ChoiceButton key={p.value} active={filter.maxPrice === p.value} onClick={() => onChange({ maxPrice: p.value })}>
@@ -180,7 +180,7 @@ export default function FilterSidebar({ filter, available, onChange, onReset }: 
       )}
 
       {!isLocal && hasFacility && (
-        <Section title="시설">
+        <Section title="🅿️ 시설">
           {available.beam && (
             <Toggle
               checked={filter.needBeam}
@@ -209,7 +209,7 @@ export default function FilterSidebar({ filter, available, onChange, onReset }: 
       )}
 
       {!isLocal && available.adminDocs && (
-        <Section title="행정서류">
+        <Section title="📄 행정서류">
           <Toggle
             checked={filter.needAdminDocs}
             onChange={(needAdminDocs) => onChange({ needAdminDocs })}

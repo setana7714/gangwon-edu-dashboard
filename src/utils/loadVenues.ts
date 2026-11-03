@@ -1,12 +1,9 @@
 import Papa from 'papaparse';
 import type { Venue } from '../types/venue';
-import { GOOGLE_SHEET_CSV_URL, GOOGLE_SHEET_LOCAL_CSV_URL } from '../config';
 
-const FALLBACK_CSV_URL = 'data/venues.csv';
-const FALLBACK_LOCAL_CSV_URL = 'data/local.csv';
-// 시트를 거치지 않고 바로 반영할 보충·수정분 (상호명 기준으로 시트 내용과 합침)
-const EXTRA_CSV_URL = 'data/venues-extra.csv';
-const EXTRA_LOCAL_CSV_URL = 'data/local-extra.csv';
+// 장소 목록은 이 두 파일 하나로만 관리 (Claude가 요청을 받아 수정·배포)
+const VENUES_CSV_URL = 'data/venues.csv';
+const LOCAL_CSV_URL = 'data/local.csv';
 
 type CsvRow = Record<string, string | undefined>;
 
@@ -75,44 +72,21 @@ async function loadRows(url: string): Promise<CsvRow[] | null> {
   return data.filter((r) => text(r['상호명']));
 }
 
-// 보충 파일의 행을 상호명 기준으로 합침: 같은 상호면 보충 파일의 '채워진 칸'만 덮어쓰고, 없는 상호는 뒤에 추가
-function mergeRows(base: CsvRow[], extra: CsvRow[]): CsvRow[] {
-  const merged = base.map((r) => ({ ...r }));
-  for (const add of extra) {
-    const name = text(add['상호명']);
-    const target = merged.find((r) => text(r['상호명']) === name);
-    const filled = Object.fromEntries(Object.entries(add).filter(([, v]) => text(v)));
-    if (target) Object.assign(target, filled);
-    else merged.push(filled);
-  }
-  return merged;
-}
-
-async function loadFirst(urls: string[]): Promise<CsvRow[]> {
-  for (const url of urls.filter(Boolean)) {
-    const rows = await loadRows(url).catch(() => null);
-    if (rows && rows.length > 0) return rows;
-  }
-  return [];
-}
-
-// 시트(없으면 예비 파일) + 보충 파일 → 장소 목록. 전화번호와 주소가 모두 없는 행은 제외
-async function loadMerged(sheetUrl: string, fallbackUrl: string, extraUrl: string): Promise<Venue[]> {
-  const [base, extra] = await Promise.all([loadFirst([sheetUrl, fallbackUrl]), loadFirst([extraUrl])]);
-  return mergeRows(base, extra)
-    .map(rowToVenue)
-    .filter((v) => v.name && (v.phone || v.address));
+async function loadVenueFile(url: string): Promise<Venue[]> {
+  const rows = (await loadRows(url).catch(() => null)) ?? [];
+  // 전화번호와 주소가 모두 없는 행은 보여줄 정보가 없어 제외
+  return rows.map(rowToVenue).filter((v) => v.name && (v.phone || v.address));
 }
 
 async function loadBusinessVenues(): Promise<Venue[]> {
-  const venues = await loadMerged(GOOGLE_SHEET_CSV_URL, FALLBACK_CSV_URL, EXTRA_CSV_URL);
+  const venues = await loadVenueFile(VENUES_CSV_URL);
   if (venues.length === 0) throw new Error('장소 데이터를 불러오지 못했습니다.');
   return venues;
 }
 
-// 근처 밥집 시트의 행은 카테고리 열이 없어도 모두 근처 밥집으로 처리
+// 근처 밥집 파일의 행은 카테고리 열이 없어도 모두 근처 밥집으로 처리
 async function loadLocalVenues(): Promise<Venue[]> {
-  const venues = await loadMerged(GOOGLE_SHEET_LOCAL_CSV_URL, FALLBACK_LOCAL_CSV_URL, EXTRA_LOCAL_CSV_URL);
+  const venues = await loadVenueFile(LOCAL_CSV_URL);
   return venues.map((v, i) => ({ ...v, id: `local-${i + 1}`, category: 'LOCAL' }));
 }
 

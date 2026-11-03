@@ -13,7 +13,7 @@ export default function SummaryBar({ count, total, adminDocsOnly, sortBy, onSort
     <div className="flex items-center justify-between gap-3 rounded-card border-2 border-forest bg-white px-5 py-3 shadow-pop">
       <div>
         <p className="text-sm">
-          총 <strong className="text-lg font-extrabold">{count}</strong>곳을 찾았어요
+          🎉 총 <strong className="font-display text-2xl font-normal text-coral">{count}</strong>곳을 찾았어요
           <span className="ml-2 text-xs text-forest/50">(전체 {total}곳)</span>
         </p>
         {adminDocsOnly && count > 0 && (
