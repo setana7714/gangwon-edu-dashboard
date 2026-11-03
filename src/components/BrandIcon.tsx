@@ -1,4 +1,4 @@
-import type { Venue } from '../types/venue';
+import type { Tab } from '../types/venue';
 
 // meetneat-icons.svg(640x160, 아이콘 4개가 한 줄) 원본을 그대로 두고 필요한 칸만 잘라서 보여줌
 const SPRITE = { width: 640, height: 160, step: 160, offset: 18, box: 124 };
@@ -46,7 +46,23 @@ export function RiceBowlIcon({ size = 28 }: { size?: number }) {
   );
 }
 
-export function CategoryIcon({ category, size = 28 }: { category: Venue['category']; size?: number }) {
-  if (category === 'LOCAL') return <RiceBowlIcon size={size} />;
-  return <BrandIcon name={category} size={size} />;
+// 회식(맥주잔) 아이콘 - 디자인 키트 아이콘과 같은 규칙(원 + 굵은 선)
+export function BeerIcon({ size = 28 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 120 120" aria-hidden="true" className="shrink-0">
+      <circle cx="60" cy="60" r="58" fill="#FFD45C" />
+      <g stroke="#173B3F" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M38 48h36v40a6 6 0 0 1-6 6H44a6 6 0 0 1-6-6Z" fill="#FFF7E8" />
+        <path d="M74 56h8a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6h-8" fill="none" />
+        <path d="M36 48c-2-8 4-14 11-11 3-7 13-7 16-1 7-3 14 3 11 12Z" fill="#FFF7E8" />
+      </g>
+    </svg>
+  );
+}
+
+// 맨 위 버튼 하나에 해당하는 아이콘
+export function TabIcon({ tab, size = 28 }: { tab: Tab; size?: number }) {
+  if (tab === 'LOCAL') return <RiceBowlIcon size={size} />;
+  if (tab === 'GATHER') return <BeerIcon size={size} />;
+  return <BrandIcon name={tab} size={size} />;
 }

@@ -1,16 +1,22 @@
 import { useState } from 'react';
-import { Building2, Check, MapPin, Minus, Phone, Star, Users, UtensilsCrossed, Wallet } from 'lucide-react';
-import { CATEGORY_LABEL, type AdminDocsSupport, type Venue } from '../types/venue';
-import { hasAllAdminDocs, isRecommended } from '../utils/filterVenues';
-import BrandIcon, { CategoryIcon } from './BrandIcon';
+import { Building2, Check, Copy, MapPin, Minus, Phone, Star, Users, UtensilsCrossed, Wallet } from 'lucide-react';
+import { TAB_LABEL, type AdminDocsSupport, type Tab, type Venue } from '../types/venue';
+import { hasAllAdminDocs, isRecommended, tabOf } from '../utils/filterVenues';
+import { copyText } from '../utils/copyText';
+import BrandIcon, { TabIcon } from './BrandIcon';
 
-// 카테고리별 파스텔 색 칩
-const CATEGORY_CHIP: Record<Venue['category'], string> = {
+// 버튼(종류)별 파스텔 색 칩
+const TAB_CHIP: Record<Tab, string> = {
+  LOCAL: 'bg-butter/70',
   MEAL: 'bg-coral/30',
+  GATHER: 'bg-blush',
   CAFE: 'bg-mint/60',
   VENUE: 'bg-sky',
-  LOCAL: 'bg-butter/70',
 };
+
+// 내비 앱에 붙여 넣기 좋게 '강원특별자치도'부터 적힌 전체 주소로 만듦
+const fullAddress = (address: string): string =>
+  !address ? '' : address.startsWith('강원') ? address : `강원특별자치도 ${address}`;
 
 const ADMIN_DOCS: { key: keyof AdminDocsSupport; label: string }[] = [
   { key: 'taxInvoice', label: '세금계산서' },
@@ -28,29 +34,38 @@ const SUMMARY_FOLD_LENGTH = 90;
 
 export default function VenueCard({ venue }: { venue: Venue }) {
   const [expanded, setExpanded] = useState(false);
+  const [copied, setCopied] = useState<'ok' | 'fail' | null>(null);
+  const tab = tabOf(venue);
   const longSummary = venue.reviewSummary.length > SUMMARY_FOLD_LENGTH;
   const docsUnknown = ADMIN_DOCS.every(({ key }) => venue.adminDocs[key] === undefined);
   // 근처 밥집은 업무용 정보(행정서류·수용 인원) 대신 메뉴·배달·도보 정보 위주로 표시
-  const isLocal = venue.category === 'LOCAL';
+  const isLocal = tab === 'LOCAL';
   const badges = [
     venue.delivery && '배달 가능',
     venue.hasBeamProjector && '빔프로젝터',
     venue.hasPrivateRoom && '프라이빗 룸',
-    venue.hasParking && '주차 가능',
   ].filter((b): b is string => Boolean(b));
   const docsComplete = !isLocal && hasAllAdminDocs(venue);
   const distance = [
     venue.walkMinutes && `걸어서 ${venue.walkMinutes}분`,
     venue.driveMinutes && `차로 ${venue.driveMinutes}분`,
   ].filter(Boolean);
+  // 비고: 주차·예약 안내 (값이 있는 것만)
+  const notes = [venue.hasParking && '🅿️ 주차 가능', venue.reservation && `📞 ${venue.reservation}`].filter(Boolean);
+  const address = fullAddress(venue.address);
+
+  const onCopy = async () => {
+    setCopied((await copyText(address)) ? 'ok' : 'fail');
+    window.setTimeout(() => setCopied(null), 2000);
+  };
 
   return (
     <article className="flex flex-col rounded-card border-2 border-forest bg-white p-5 shadow-pop transition duration-200 motion-safe:animate-pop-in hover:-translate-y-1.5 hover:rotate-0 hover:shadow-[7px_7px_0_0_#173B3F] odd:-rotate-[0.6deg] even:rotate-[0.6deg]">
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className={`flex items-center gap-1.5 rounded-full border-2 border-forest py-0.5 pl-0.5 pr-2.5 text-xs font-bold ${CATEGORY_CHIP[venue.category]}`}>
-            <CategoryIcon category={venue.category} size={24} />
-            {CATEGORY_LABEL[venue.category]}
+          <span className={`flex items-center gap-1.5 rounded-full border-2 border-forest py-0.5 pl-0.5 pr-2.5 text-xs font-bold ${TAB_CHIP[tab]}`}>
+            <TabIcon tab={tab} size={24} />
+            {TAB_LABEL[tab]}
           </span>
           {isRecommended(venue) && (
             <span className="flex rotate-2 items-center gap-1 rounded-full border-2 border-forest bg-coral py-0.5 pl-0.5 pr-2.5 text-xs font-extrabold">
@@ -132,6 +147,12 @@ export default function VenueCard({ venue }: { venue: Venue }) {
         </div>
       )}
 
+      {notes.length > 0 && (
+        <p className="mt-3 rounded-2xl border-2 border-dashed border-forest/40 bg-butter/30 px-3 py-2 text-xs font-bold">
+          📝 비고 · {notes.join('  ')}
+        </p>
+      )}
+
       {!isLocal && !docsUnknown && (
         <ul className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 rounded-2xl bg-vanilla p-3 text-xs">
           {ADMIN_DOCS.map(({ key, label }) => {
@@ -163,11 +184,11 @@ export default function VenueCard({ venue }: { venue: Venue }) {
 
       {venue.verifiedAt && <p className="mt-2 text-xs text-forest/50">정보 확인일: {venue.verifiedAt}</p>}
 
-      <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-1 2xl:grid-cols-2">
+      <div className="mt-4 grid grid-cols-2 gap-2">
         {venue.phone && (
           <a
             href={`tel:${venue.phone}`}
-            className="btn-pop flex items-center justify-center gap-1.5 rounded-full bg-coral px-3 py-2 text-sm font-bold"
+            className="btn-pop col-span-2 flex items-center justify-center gap-1.5 rounded-full bg-coral px-3 py-2 text-sm font-bold"
           >
             <Phone size={14} />
             {isLocal ? '전화로 주문·문의하기' : '전화로 자리 확인하기'}
@@ -180,8 +201,19 @@ export default function VenueCard({ venue }: { venue: Venue }) {
           className="btn-pop flex items-center justify-center gap-1.5 rounded-full bg-white px-3 py-2 text-sm font-bold hover:bg-butter"
         >
           <MapPin size={14} />
-          지도에서 살펴보기
+          지도 보기
         </a>
+        {address && (
+          <button
+            type="button"
+            onClick={onCopy}
+            title={address}
+            className="btn-pop flex items-center justify-center gap-1.5 rounded-full bg-white px-3 py-2 text-sm font-bold hover:bg-butter"
+          >
+            {copied === 'ok' ? <Check size={14} strokeWidth={3} /> : <Copy size={14} />}
+            {copied === 'ok' ? '복사됐어요!' : copied === 'fail' ? '길게 눌러 복사' : '주소 복사'}
+          </button>
+        )}
       </div>
     </article>
   );

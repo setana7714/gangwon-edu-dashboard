@@ -18,6 +18,7 @@ const toNumber = (value: string | undefined): number => Number(text(value).repla
 
 function toCategory(value: string | undefined): Venue['category'] {
   const v = text(value).toUpperCase();
+  if (v.includes('회식') || v === 'GATHER') return 'GATHER';
   if (v.includes('근처') || v.includes('밥집') || v.includes('배달') || v === 'LOCAL') return 'LOCAL';
   if (v.includes('카페') || v === 'CAFE') return 'CAFE';
   if (v.includes('연수') || v.includes('대관') || v === 'VENUE') return 'VENUE';
@@ -34,6 +35,7 @@ function rowToVenue(row: CsvRow, index: number): Venue {
     menu: text(row['대표 메뉴']) || undefined,
     nearby: text(row['주요 인근 기관']) || undefined,
     phone: text(row['예약 전화번호']) || text(row['전화번호']),
+    reservation: text(row['예약']) || undefined,
     address: text(row['주소']),
     driveMinutes: toNumber(row['도교육청에서 차로(분)']) || undefined,
     walkMinutes: toNumber(row['도보(분)']) || undefined,

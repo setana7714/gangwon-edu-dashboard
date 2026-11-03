@@ -1,13 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
 import Header from './components/Header';
-import FilterSidebar from './components/FilterSidebar';
+import TabBar from './components/TabBar';
+import FilterPanel from './components/FilterPanel';
 import SummaryBar from './components/SummaryBar';
-import VenueGrid from './components/VenueGrid';
+import ResultSections from './components/ResultSections';
 import Footer from './components/Footer';
 import FaceDots from './components/FaceDots';
-import { RiceBowlIcon } from './components/BrandIcon';
-import type { Venue } from './types/venue';
-import { filterVenues, getAvailability, INITIAL_FILTER, type FilterState } from './utils/filterVenues';
+import { TabIcon } from './components/BrandIcon';
+import { TAB_HINT, TAB_LABEL, TAB_ORDER, type Tab, type Venue } from './types/venue';
+import {
+  defaultSort,
+  filterVenues,
+  getAvailability,
+  INITIAL_FILTER,
+  tabOf,
+  WALK_LIMIT_MIN,
+  type FilterState,
+} from './utils/filterVenues';
 import { loadVenues } from './utils/loadVenues';
 
 // 지금 화면의 프로그램 파일과 서버에 올라간 최신 파일이 다르면 새 버전이 배포된 것
@@ -48,56 +57,60 @@ export default function App() {
     return () => document.removeEventListener('visibilitychange', onVisible);
   }, []);
 
+  const { tab } = filter;
+
+  const counts = useMemo(() => {
+    const c = Object.fromEntries(TAB_ORDER.map((t) => [t, 0])) as Record<Tab, number>;
+    for (const v of venues) c[tabOf(v)] += 1;
+    return c;
+  }, [venues]);
+
+  const tabVenues = useMemo(() => venues.filter((v) => tabOf(v) === tab), [venues, tab]);
+  const available = useMemo(() => getAvailability(tabVenues), [tabVenues]);
   const filtered = useMemo(() => filterVenues(venues, filter), [venues, filter]);
-  const available = useMemo(() => getAvailability(venues), [venues]);
 
-  const isLocal = filter.category === 'LOCAL';
-  // 업무 장소와 근처 밥집은 따로 셈
-  const total = venues.filter((v) => (v.category === 'LOCAL') === isLocal).length;
-
-  const updateFilter =(patch: Partial<FilterState>) => setFilter((prev) => ({ ...prev, ...patch }));
-  // 정렬 기준은 필터 초기화 대상에서 제외
-  const resetFilter = () =>
-    setFilter((prev) => ({
-      ...INITIAL_FILTER,
-      sortBy: prev.sortBy,
-      // 근처 밥집을 보던 중이면 초기화 후에도 근처 밥집에 머무름
-      category: prev.category === 'LOCAL' ? 'LOCAL' : 'ALL',
-    }));
+  const updateFilter = (patch: Partial<FilterState>) => setFilter((prev) => ({ ...prev, ...patch }));
+  const changeTab = (next: Tab) => setFilter({ ...INITIAL_FILTER, tab: next, sortBy: defaultSort(next) });
+  // 조건만 되돌리고 보던 버튼과 정렬은 유지
+  const resetFilter = () => setFilter((prev) => ({ ...INITIAL_FILTER, tab: prev.tab, sortBy: prev.sortBy }));
 
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 lg:flex-row lg:items-start">
-        <FilterSidebar filter={filter} available={available} onChange={updateFilter} onReset={resetFilter} />
-        <main className="min-w-0 flex-1">
-          {isLocal && (
-            <div className="mb-4 flex items-center gap-3 px-1">
-              <RiceBowlIcon size={44} />
-              <div>
-                <h2 className="text-3xl leading-tight">근처 밥집</h2>
-                <p className="text-sm text-forest/70">오늘 초근 때 뭐먹지?</p>
-              </div>
-            </div>
-          )}
-          <SummaryBar
-            count={filtered.length}
-            total={total}
-            adminDocsOnly={filter.needAdminDocs}
-            sortBy={filter.sortBy}
-            onSortChange={(sortBy) => updateFilter({ sortBy })}
-          />
-          {loading ? (
-            <div className="mt-10 flex flex-col items-center text-sm text-forest/60">
-              <FaceDots />
-              밥 짓는 중이에요… 🍚
-            </div>
-          ) : error ? (
-            <p className="mt-10 text-center text-sm font-medium">{error}</p>
-          ) : (
-            <VenueGrid venues={filtered} hasAny={total > 0} onReset={resetFilter} />
-          )}
-        </main>
+      <div className="mx-auto w-full max-w-7xl flex-1 space-y-4 px-4 py-6">
+        <TabBar tab={tab} counts={counts} onChange={changeTab} />
+
+        <div className="flex items-center gap-3 px-1">
+          <TabIcon tab={tab} size={48} />
+          <div>
+            <h2 className="text-3xl leading-tight">{TAB_LABEL[tab]}</h2>
+            <p className="text-sm text-forest/70">{TAB_HINT[tab]}</p>
+            {tab === 'LOCAL' && (
+              <p className="text-xs text-forest/50">걸어서 {WALK_LIMIT_MIN}분 이내이거나 배달되는 곳이에요</p>
+            )}
+          </div>
+        </div>
+
+        <FilterPanel filter={filter} available={available} onChange={updateFilter} onReset={resetFilter} />
+
+        <SummaryBar
+          count={filtered.length}
+          total={tabVenues.length}
+          adminDocsOnly={filter.needAdminDocs && tab !== 'LOCAL'}
+          sortBy={filter.sortBy}
+          onSortChange={(sortBy) => updateFilter({ sortBy })}
+        />
+
+        {loading ? (
+          <div className="mt-10 flex flex-col items-center text-sm text-forest/60">
+            <FaceDots />
+            밥 짓는 중이에요… 🍚
+          </div>
+        ) : error ? (
+          <p className="mt-10 text-center text-sm font-medium">{error}</p>
+        ) : (
+          <ResultSections tab={tab} venues={filtered} hasAny={tabVenues.length > 0} onReset={resetFilter} />
+        )}
       </div>
       <Footer />
     </div>

@@ -33,14 +33,14 @@ export default function Header() {
           <span aria-hidden="true" className="absolute right-6 top-4 text-4xl motion-safe:animate-bob">🍜</span>
           <span aria-hidden="true" className="absolute bottom-5 right-24 hidden text-3xl [animation-delay:0.8s] motion-safe:animate-bob md:block">☕</span>
           <span aria-hidden="true" className="absolute right-40 top-6 hidden text-3xl [animation-delay:1.6s] motion-safe:animate-bob md:block">🍗</span>
-          <div className="relative px-6 py-8 sm:px-8 md:pr-[440px]">
+          <div className="relative px-6 py-5 sm:px-8 sm:py-8 md:pr-[440px]">
             <span className="inline-block -rotate-3 rounded-full border-2 border-forest bg-coral px-3 py-1 text-sm font-extrabold text-forest shadow-pop-sm motion-safe:animate-wiggle">
               꼬르륵… 🍚
             </span>
-            <h1 className="mt-4 text-4xl leading-tight sm:text-5xl">
+            <h1 className="mt-3 text-3xl leading-tight sm:mt-4 sm:text-5xl">
               일도 <span className="text-butter">밥심</span>부터! 🥢
             </h1>
-            <p className="mt-3 max-w-xl text-sm text-vanilla/90 sm:text-base">
+            <p className="mt-3 hidden max-w-xl text-sm text-vanilla/90 sm:block sm:text-base">
               배고프면 결재도 안 넘어가요 😋 점심 오찬부터 초근 저녁까지, 도교육청 근처 밥집·카페·연수 장소를
               골라보세요!
             </p>
