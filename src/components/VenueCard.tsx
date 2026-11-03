@@ -53,6 +53,8 @@ export default function VenueCard({ venue }: { venue: Venue }) {
   // 비고: 주차·예약 안내 (값이 있는 것만)
   const notes = [venue.hasParking && '🅿️ 주차 가능', venue.reservation && `📞 ${venue.reservation}`].filter(Boolean);
   const address = fullAddress(venue.address);
+  // 숫자만 남겨 폰에서 눌렀을 때 바로 전화 걸기 화면이 열리게 함
+  const telHref = `tel:${venue.phone.replace(/[^\d+]/g, '')}`;
 
   const onCopy = async () => {
     setCopied((await copyText(address)) ? 'ok' : 'fail');
@@ -96,7 +98,7 @@ export default function VenueCard({ venue }: { venue: Venue }) {
         <div className="flex items-center gap-2">
           <Phone size={15} className="shrink-0 text-forest/50" />
           {venue.phone ? (
-            <a href={`tel:${venue.phone}`} className="font-bold text-forest underline-offset-2 hover:underline">
+            <a href={telHref} className="-my-1 py-1 font-bold text-forest underline underline-offset-2">
               {venue.phone}
             </a>
           ) : (
@@ -187,7 +189,7 @@ export default function VenueCard({ venue }: { venue: Venue }) {
       <div className="mt-4 grid grid-cols-2 gap-2">
         {venue.phone && (
           <a
-            href={`tel:${venue.phone}`}
+            href={telHref}
             className="btn-pop col-span-2 flex items-center justify-center gap-1.5 rounded-full bg-coral px-3 py-2 text-sm font-bold"
           >
             <Phone size={14} />
