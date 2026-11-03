@@ -13,7 +13,7 @@ export default function Header() {
               className="h-12 w-12 motion-safe:animate-bob motion-safe:group-hover:animate-wiggle sm:h-16 sm:w-16"
             />
             <span>
-              <span className="block font-display text-2xl leading-tight sm:text-4xl">쑥의 교육청도 식후경이다</span>
+              <span className="block font-display text-2xl leading-tight sm:text-4xl">은쑥이의 교육청도 식후경</span>
               <span className="mt-0.5 block text-[11px] font-bold tracking-[0.15em] text-coral sm:text-xs">
                 🍚 MEET • EAT • WORK WELL 🍜
               </span>
