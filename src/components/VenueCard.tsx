@@ -102,7 +102,7 @@ export default function VenueCard({ venue }: { venue: Venue }) {
               {venue.phone}
             </a>
           ) : (
-            <span className="text-forest/50">전화번호는 아직 확인 전이에요</span>
+            <span className="text-forest/50">등록된 전화번호가 없어요</span>
           )}
         </div>
         {venue.address && (
